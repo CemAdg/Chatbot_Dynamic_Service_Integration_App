@@ -1,9 +1,9 @@
-import os
-import json
-import time
-
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, url_for
 from flask_cors import CORS
+import urllib
+import re
+
+#from manage import list_routes
 
 def create_app(test_config=None):
 
@@ -33,28 +33,41 @@ def create_app(test_config=None):
         return jsonify("Healthy")
 
 
+
+    """
+    function to get API routes/endpoints
+    """
+
+    def list_routes(prefix):
+        links = []
+        for rule in app.url_map.iter_rules():
+            methods = ','.join(rule.methods)
+            line = urllib.parse.unquote("{}".format(rule))
+            if line.startswith(prefix):
+                links.append(line)
+
+        return links  
+
+
     """
     GET /api
     Get all registered store device types
-    """    
-    @app.route('/api', methods=['GET'])
+    """
+
+    @app.route("/api")
     def get_devices():
-        
         try:
-   
-            devices = {
-                1: "Pfandautomat",
-                2: "Waage"
-            }
-        
+            links = list_routes("/api")            
+
             return jsonify({
                 "success": True,
-                "device": devices
+                "devices": links
             })
-
 
         except BaseException:
             abort(422)
+
+
 
     """
     GET /api/pfandautomaten
@@ -89,19 +102,20 @@ def create_app(test_config=None):
     def get_pfandautomaten_services(pfandautomat_id):
         
         try:
-   
-            pfandautomat_services = {
-                1: "Füllstand",
-                2: "Störungen",
-                3: "Wartungsaktivitäten"
-            }
-        
+
+            links = list_routes("/api/pfandautomaten/<int:pfandautomat_id>/")        
+            services = []
+
+            #replace <int:pfandautomat_id> with actual id by using regex
+            for link in links:
+                link = link.replace("<int:pfandautomat_id>", pfandautomat_id)
+                services.append(link)
+
             return jsonify({
                 "success": True,
                 "pfandautomat_id": pfandautomat_id,
-                "pfandautomat_services": pfandautomat_services
+                "services": services
             })
-
 
         except BaseException:
             abort(422)
@@ -163,16 +177,17 @@ def create_app(test_config=None):
         
         try:
    
-            waage_services = {
-                1: "Füllstand",
-                2: "Störungen",
-                3: "Wartungsaktivitäten"
-            }
-        
+            links = list_routes("/api/waagen/<int:waage_id>/")   
+            print(links)         
+
             return jsonify({
                 "success": True,
-                "waage_services": waage_services
+                "waage_id": waage_id,
+                "services": links
             })
+
+        except BaseException:
+            abort(422)
 
 
         except BaseException:
