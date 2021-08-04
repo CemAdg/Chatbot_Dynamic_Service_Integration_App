@@ -12,5 +12,5 @@ tbd
 
 The `./backend` directory contains a Flask web server with REST API endpoints.
 
-[View the README.md within ./backend for more details.](/-/tree/Master/backend)
+[View the README.md within ./backend for more details.](https://github.com/CemAdg/UCC_Chatbot_Service_Interface/tree/Master/backend)
 
