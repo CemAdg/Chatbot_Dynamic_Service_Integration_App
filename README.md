@@ -12,5 +12,5 @@ tbd
 
 The `./backend` directory contains a Flask web server with REST API endpoints.
 
-[View the README.md within ./backend for more details.](https://gitlab.reutlingen-university.de/SCCA/ZRoom_App/-/tree/main/backend)
+[View the README.md within ./backend for more details.](/-/tree/Master/backend)
 

@@ -1,8 +1,8 @@
 # Backend
 
-## ZRoom App - Lamp Manipulation APIs
+## Chatbot Service Integration APIs
 
-The python flask app represents the backend of the ZRoom App as the web server accepting HTTP requests from the React Frontend / ZRoom App CLient. The backend consists of a REST API that activates the corresponding lamp that the client sent in its GET request.
+tbd
 
 When running the app locally, the app is accessible under the following URL: http://localhost:5000 or  http://127.0.0.1:5000
 
@@ -41,16 +41,14 @@ This chapter gives a detailed documentation about the API endpoints and their ex
 
 ### Endpoints
 
-- GET '/lamp/${integer}/activate'
+- GET '/api/'
 
 
-#### GET '/lamp/${integer}/activate'
-- Activates the corresponding lamp according to the lamp_id that is sent within the GET request
-- Request Arguments: id - integer
-- Returns: Returns an object with id of the manipulated lamp, and the success information
+#### GET '/api/'
+- tbd
 ```
 {
-    'lamp_id': 1,
+    'tbd': 1,
     'success': true
 }
 ```
