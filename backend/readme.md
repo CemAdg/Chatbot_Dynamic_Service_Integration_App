@@ -1,6 +1,6 @@
 # Backend
 
-## Chatbot Service Integration APIs
+## Chatbot Dynamic Service Integration APIs
 
 tbd
 
