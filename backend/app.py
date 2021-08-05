@@ -272,7 +272,7 @@ def create_app(test_config=None):
             for link in links:
                 level_number = link.count('/')
                 if level_number == 4:
-                    link = link.replace("<int:waaget_id>",str(pfandautomat_id))
+                    link = link.replace("<int:waaget_id>",str(waage_id))
                     services.append(link)
             
 
