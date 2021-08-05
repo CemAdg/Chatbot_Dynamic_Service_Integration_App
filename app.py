@@ -4,7 +4,6 @@ import urllib
 import re
 import json
 
-#from manage import list_routes
 
 def create_app(test_config=None):
 
