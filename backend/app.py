@@ -52,13 +52,15 @@ def create_app(test_config=None):
     """
     GET /api
     Get all registered store device types
+    [1st level -> Starting point for the Chatbot]
     """
 
     @app.route("/api")
     def get_devices():
         try:
             links = list_routes("/api")            
-
+            # only return routes for device types (1st level)
+            # remove every route that has more than two slashes, thus that are from the 2nd level
             return jsonify({
                 "success": True,
                 "devices": links
@@ -72,6 +74,7 @@ def create_app(test_config=None):
     """
     GET /api/pfandautomaten
     Get all available devices of type Pfandautomat in the store
+    [2nd level]
     """    
     @app.route('/api/pfandautomaten', methods=['GET'])
     def get_pfandautomaten():
@@ -97,7 +100,8 @@ def create_app(test_config=None):
     """
     GET /api/pfandautomaten/{id}
     Get all available services of specfific Pfandautomat with id
-    """    
+    [3rd level]
+    """  
     @app.route('/api/pfandautomaten/<int:pfandautomat_id>', methods=['GET'])
     def get_pfandautomaten_services(pfandautomat_id):
         
@@ -106,7 +110,8 @@ def create_app(test_config=None):
             links = list_routes("/api/pfandautomaten/<int:pfandautomat_id>/")        
             services = []
 
-            #replace <int:pfandautomat_id> with actual id by using regex
+            # replace <int:pfandautomat_id> with actual id by using regex
+            # remove every route that has more than three slashes, thus that are from the 4th level
             for link in links:
                 link = link.replace("<int:pfandautomat_id>", pfandautomat_id)
                 services.append(link)
@@ -124,6 +129,7 @@ def create_app(test_config=None):
     """
     GET /api/pfandautomaten/{id}/füllstand
     Get füllstand of Pfandautomat with id
+    [4th Level]
     """    
     @app.route('/api/pfandautomaten/<int:pfandautomat_id>/füllstand', methods=['GET'])
     def get_pfandautomaten_services_füllstand(pfandautomat_id):
@@ -147,6 +153,7 @@ def create_app(test_config=None):
     """
     GET /api/waagen
     Get Get all available devices of type Waage in the store
+    [2nd level]
     """    
     @app.route('/api/waagen', methods=['GET'])
     def get_waagen():
@@ -171,6 +178,7 @@ def create_app(test_config=None):
     """
     GET /api/waagen/{id}
     Get all available services of specfific Waage with id
+    [3rd level]
     """    
     @app.route('/api/waagen/<int:waage_id>', methods=['GET'])
     def get_waagen_services(waage_id):
@@ -197,6 +205,7 @@ def create_app(test_config=None):
     """
     GET /api/waagen/{id}/störungen
     Get Störungen of Waage with id
+    [4th level]
     """    
     @app.route('/api/waagen/<int:waage_id>/störungen', methods=['GET'])
     def get_waagen_services_störungen(waage_id):
