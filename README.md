@@ -1,4 +1,4 @@
-# Chatbot Dynamic Service Integration App ofr UCC @ Retail
+# Chatbot Dynamic Service Integration App of UCC @ Retail
 
 Web App with REST APIs for dynamically integrating services to a speech assistant / chatbot without adapting the chatbot to the corresponding tasks of the service 
 
