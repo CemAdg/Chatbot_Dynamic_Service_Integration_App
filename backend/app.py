@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, abort, url_for
 from flask_cors import CORS
 import urllib
 import re
+import json
 
 #from manage import list_routes
 
@@ -21,17 +22,8 @@ def create_app(test_config=None):
             'Content-Type,Authorization,true')
         response.headers.add(
             'Access-Control-Allow-Methods',
-            'GET,POST,PATCH,DELETE,OPTIONS')
+            'GET,POST,OPTIONS')
         return response
-
-
-    """
-    Check if app is running
-    """
-    @app.route('/', methods=['POST', 'GET'])
-    def health():
-        return jsonify("Healthy")
-
 
 
     """
@@ -48,6 +40,13 @@ def create_app(test_config=None):
 
         return links  
 
+    """
+    Check if app is running
+    """
+    @app.route('/', methods=['POST', 'GET'])
+    def health():
+        return jsonify("Healthy")
+
 
     """
     GET /api
@@ -58,18 +57,26 @@ def create_app(test_config=None):
     @app.route("/api")
     def get_devices():
         try:
-            links = list_routes("/api")            
+            links = list_routes("/api") 
+            device_types = []         
+
             # only return routes for device types (1st level)
-            # remove every route that has more than two slashes, thus that are from the 2nd level
+            for link in links:
+                level_number = link.count('/')
+                if level_number == 2:
+                    device_types.append(link)
+
             return jsonify({
                 "success": True,
-                "devices": links
+                "device_types": device_types
             })
 
         except BaseException:
             abort(422)
 
 
+
+    # Pfandautomat
 
     """
     GET /api/pfandautomaten
@@ -80,16 +87,46 @@ def create_app(test_config=None):
     def get_pfandautomaten():
         
         try:
-   
-            pfandautomaten = {
-                1: "P001",
-                2: "P002",
-                3: "P003"
-            }
-        
+
+            json_dummy = [  
+                { 
+                    "id": 1, 
+                    "name" : "Einwegautomat P001",
+                    "link" : "/api/pfandautomaten/1"
+                },
+                { 
+                    "id": 2, 
+                    "name" : "Mehrwegautomat P002",
+                    "link" : "/api/pfandautomaten/2"
+                },
+                { 
+                    "id": 3, 
+                    "name" : "Mehrwegautomat P003",
+                    "link" : "/api/pfandautomaten/3"
+                } 
+            ]
+
+            pfandautomaten = json_dummy
+
+            devices = [] 
+
+            """
+            for pfandautomat in pfandautomaten:
+                device = []
+                device_link = "/api/pfandautomaten/{}".format(pfandautomat["id"])
+                device_name = pfandautomat["name"]
+
+                device = [device_link , device_name]
+                print(device)
+                devices.append(device)
+            """
+
+            devices = pfandautomaten 
+
             return jsonify({
                 "success": True,
-                "pfandautomaten": pfandautomaten
+                "device_type": "Pfandautomat",
+                "devices": devices
             })
 
 
@@ -110,15 +147,18 @@ def create_app(test_config=None):
             links = list_routes("/api/pfandautomaten/<int:pfandautomat_id>/")        
             services = []
 
-            # replace <int:pfandautomat_id> with actual id by using regex
-            # remove every route that has more than three slashes, thus that are from the 4th level
+            # only return routes for services of corresponding device from device type pfandautomat (3rd level)
             for link in links:
-                link = link.replace("<int:pfandautomat_id>", pfandautomat_id)
-                services.append(link)
+                level_number = link.count('/')
+                if level_number == 4:
+                    link = link.replace("<int:pfandautomat_id>",str(pfandautomat_id))
+                    services.append(link)
+            
 
             return jsonify({
                 "success": True,
-                "pfandautomat_id": pfandautomat_id,
+                "device_id": pfandautomat_id,
+                "device_type": "Pfandautomat",
                 "services": services
             })
 
@@ -140,7 +180,8 @@ def create_app(test_config=None):
         
             return jsonify({
                 "success": True,
-                "pfandautomat_id": pfandautomat_id,
+                "device_id": pfandautomat_id,
+                "device_type": "Pfandautomat",
                 "füllstand": füllstand
             })
 
@@ -148,7 +189,34 @@ def create_app(test_config=None):
         except BaseException:
             abort(422)
 
+    """
+    GET /api/pfandautomaten/{id}/störungen
+    Get störungen of Pfandautomat with id
+    [4th Level]
+    """    
+    @app.route('/api/pfandautomaten/<int:pfandautomat_id>/störungen', methods=['GET'])
+    def get_pfandautomaten_services_störungen(pfandautomat_id):
+        
+        try:
+   
+            störungen = { 
+                "Komponente":"Band",
+                "Beschreibung":"Flascheneinfuhrband läuft nicht mehr."
+            }
+            return jsonify({
+                "success": True,
+                "device_id": pfandautomat_id,
+                "device_type": "Pfandautomat",
+                "störungen": störungen
+            })
 
+
+        except BaseException:
+            abort(422)
+
+
+
+    # Waage
 
     """
     GET /api/waagen
@@ -160,17 +228,29 @@ def create_app(test_config=None):
         
         try:
 
-            waagen = {
-                1: "W001",
-                2: "W002"
-            }
-        
+            json_dummy = [  
+                { 
+                    "id": 1, 
+                    "name" : "Obstwaage P001",
+                    "link" : "/api/waagen/1"
+                },
+                { 
+                    "id": 2, 
+                    "name" : "Gemüsewaage P002",
+                    "link" : "/api/waagen/2"
+                }
+            ]
+
+            waagen = json_dummy
+
+            devices = [] 
+            devices = waagen
+
             return jsonify({
                 "success": True,
-                "waagen": waagen
+                "device_type": "Waage",
+                "devices": devices
             })
-
-
         except BaseException:
             abort(422)
 
@@ -184,22 +264,29 @@ def create_app(test_config=None):
     def get_waagen_services(waage_id):
         
         try:
-   
-            links = list_routes("/api/waagen/<int:waage_id>/")   
-            print(links)         
+
+            links = list_routes("/api/waagen/<int:waage_id>/")        
+            services = []
+
+            # only return routes for services of corresponding device from device type waage (3rd level)
+            for link in links:
+                level_number = link.count('/')
+                if level_number == 4:
+                    link = link.replace("<int:waaget_id>",str(pfandautomat_id))
+                    services.append(link)
+            
 
             return jsonify({
                 "success": True,
-                "waage_id": waage_id,
-                "services": links
+                "device_id": waage_id,
+                "device_type": "Waage",
+                "services": services
             })
 
-        except BaseException:
-            abort(422)
-
 
         except BaseException:
             abort(422)
+
 
         
     """
@@ -219,7 +306,8 @@ def create_app(test_config=None):
         
             return jsonify({
                 "success": True,
-                "waage_id": waage_id,
+                "device_id": waage_id,
+                "device_type": "Waage",
                 "störungen": störungen
             })
 
