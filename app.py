@@ -39,6 +39,8 @@ def create_app(test_config=None):
 
         return links  
 
+
+
     """
     Check if app is running
     """
@@ -47,13 +49,14 @@ def create_app(test_config=None):
         return jsonify("Healthy")
 
 
+
     """
     GET /api
     Get all registered store device types
     [1st level -> Starting point for the Chatbot]
     """
 
-    @app.route("/api")
+    @app.route("/api", methods=['GET'])
     def get_devices():
         try:
             links = list_routes("/api") 
@@ -61,21 +64,75 @@ def create_app(test_config=None):
 
             # only return routes for device types (1st level)
             for link in links:
+                
+                device_type = {}
+                tags = []
+
                 level_number = link.count('/')
                 if level_number == 2:
-                    device_types.append(link)
+                    # ToDo: tags in jeder API als Metadaten hinterlegen und beim Abgreifen aller Routes auch die Tags abgreifen 
+                    if "pfandautomaten" in link:
+                        tags = [ 
+                            "Pfandflaschenautomat",
+                            "Leergutautomat"
+                        ]
+                    if "waagen" in link:
+                        tags = [ 
+                            "Wiegegerät"
+                        ]
+
+                    device_type = {
+                        "uri" : link,
+                        "tags" : tags
+                    }
+
+                    device_types.append(device_type)
 
             return jsonify({
                 "success": True,
                 "device_types": device_types
-            })
+            })            
 
         except BaseException:
             abort(422)
 
 
 
-    # Pfandautomat
+    """
+    Pfandautomat APIs
+
+    ####################=-...-=####################
+    ##################=-.......-=##################
+    ################=-...........-=################
+    ##############=-...............-=##############
+    ############=-...................-=############
+    ###########-..............*==:.....-###########
+    #########-................+==-.......-#########
+    #######-.................:====.........-#######
+    #####-..................-=====*..........-#####
+    ###-....................*======:...........-###
+    #-.....................-=======*.............-#
+    ........................=======*...............
+    .................:*****+..*====*...............
+    .................=======:.*====*...............
+    .................=======:.*====*.+****:........
+    .................=======:.*====*.*#######+.....
+    .................=======:.*====*.::::+####=....
+    .................=======:.*====*.......*###*...
+    ..........+:.....=======:.*===*-.......:###=...
+    ........*##+.....-+++++:...............*###=...
+    .....:#####=*************************=#####-...
+    ...-#####################################*.....
+    .....-=####=**************************+-.......
+    ........+##+...................................
+    ..........::...................................
+    ...............................................
+    ########=.............................=########
+    ########=.............................=########
+    ########=.............................=########
+    ########=.............................=########
+
+    """
 
     """
     GET /api/pfandautomaten
@@ -84,24 +141,24 @@ def create_app(test_config=None):
     """    
     @app.route('/api/pfandautomaten', methods=['GET'])
     def get_pfandautomaten():
-        
+
         try:
 
             json_dummy = [  
                 { 
                     "id": 1, 
                     "name" : "Einwegautomat P001",
-                    "link" : "/api/pfandautomaten/1"
+                    "uri" : "/api/pfandautomaten/1"
                 },
                 { 
                     "id": 2, 
                     "name" : "Mehrwegautomat P002",
-                    "link" : "/api/pfandautomaten/2"
+                    "uri" : "/api/pfandautomaten/2"
                 },
                 { 
                     "id": 3, 
                     "name" : "Mehrwegautomat P003",
-                    "link" : "/api/pfandautomaten/3"
+                    "uri" : "/api/pfandautomaten/3"
                 } 
             ]
 
@@ -148,16 +205,38 @@ def create_app(test_config=None):
 
             # only return routes for services of corresponding device from device type pfandautomat (3rd level)
             for link in links:
+                service_type = {}
+                tags = []
+
                 level_number = link.count('/')
                 if level_number == 4:
                     link = link.replace("<int:pfandautomat_id>",str(pfandautomat_id))
-                    services.append(link)
+                    print(link)
+                    # ToDo: tags in jeder API als Metadaten hinterlegen und beim Abgreifen aller Routes auch die Tags abgreifen 
+                    if "füllstand" in link:
+                        tags = [ 
+                            "fillLevel",
+                            "Ladung"
+                        ]
+                    if "störungen" in link:
+                        tags = [ 
+                            "Error",
+                            "Fehler"
+                        ]
+
+                    service_type = {
+                        "uri" : link,
+                        "tags" : tags
+                    }
+                    print(service_type)
+
+                    services.append(service_type)
             
 
             return jsonify({
                 "success": True,
-                "device_id": pfandautomat_id,
                 "device_type": "Pfandautomat",
+                "device": pfandautomat_id,
                 "services": services
             })
 
@@ -174,14 +253,20 @@ def create_app(test_config=None):
     def get_pfandautomaten_services_füllstand(pfandautomat_id):
         
         try:
-   
-            füllstand = "50%"
-        
+
+            füllstand = [
+                { 
+                    "Füllstand":"75%",
+                    "Beschreibung":"Bitte Pfandautomat demnächst leeren, um Überfüllung zu vermeiden."
+                } 
+            ]  
+
             return jsonify({
                 "success": True,
-                "device_id": pfandautomat_id,
+                "device": pfandautomat_id,
                 "device_type": "Pfandautomat",
-                "füllstand": füllstand
+                "service" : "Füllstand",
+                "service_message" : füllstand
             })
 
 
@@ -198,15 +283,23 @@ def create_app(test_config=None):
         
         try:
    
-            störungen = { 
-                "Komponente":"Band",
-                "Beschreibung":"Flascheneinfuhrband läuft nicht mehr."
-            }
+            störungen = [
+                { 
+                    "Komponente":"Band",
+                    "Beschreibung":"Flaschen-Einfuhrband läuft nicht mehr."
+                },
+                { 
+                    "Komponente":"Drucker",
+                    "Beschreibung":"Pfandbon-Drucker funktioniert nicht mehr."
+                }
+            ]
+
             return jsonify({
                 "success": True,
-                "device_id": pfandautomat_id,
+                "device": pfandautomat_id,
                 "device_type": "Pfandautomat",
-                "störungen": störungen
+                "service" : "Störungen",
+                "service_message" : störungen
             })
 
 
@@ -214,8 +307,41 @@ def create_app(test_config=None):
             abort(422)
 
 
-
-    # Waage
+ 
+    """
+    Waage APIs
+    ...............................................................................
+    ...............................................................................
+    .....................................=WWWW*....................................
+    .....................................=WWWW*....................................
+    .....................................=WWWW*....................................
+    .....................................=WWWW*...............-=@#:................
+    ................*WWWW#...............=WWWW*..............+WWWWW=...............
+    ...............-WWWWWW#*+:-..........=WWWW*.......-:+*=#@WWWWWW#...............
+    ................=WWWW@-+@WWWWWWWWWW@#@WWWW@WWWWWWWWWWW#+..*WWW#-...............
+    .................=@=W-.....-+@WWWWWWWWWWWWWWWWWWW@+-......:W*W*................
+    ................*W-.##..........-*@WWWWWWWWW@*-..........-W*.:W:...............
+    ...............+W:...@=..............=WWWW*..............@#...*W-..............
+    ..............-W*....-W*.............=WWWW*.............=@.....=@..............
+    ..............@=......+W:............=WWWW*............*W-......@#.............
+    .............#@........*W-...........=WWWW*...........:W:.......-W*............
+    ............*W-.........##...........=WWWW*..........-W*.........:W:...........
+    ...........:W:..........-@=..........=WWWW*..........##...........*W-..........
+    ..........-W*............:W+.........=WWWW*.........*W-............##..........
+    ..........##..............*W-........=WWWW*........+W:.............-@=.........
+    .......#@@W@@@@@@@@@@@@@@@@WW@@-.....=WWWW*.....+@@WW@@@@@@@@@@@@@@@@W@@*......
+    .......+WWWWWWWWWWWWWWWWWWWWWW#......=WWWW*......@WWWWWWWWWWWWWWWWWWWWWW:......
+    ........:WWWWWWWWWWWWWWWWWWWW=.......=WWWW*.......#WWWWWWWWWWWWWWWWWWW@-.......
+    ..........:@WWWWWWWWWWWWWWW*...-:::::#WWWW*:::::...-=WWWWWWWWWWWWWWW#-.........
+    ..............:*#@WW@#=+-......:WWWWWWWWWWWWWWWW-......-*=@@W@@#*:.............
+    ...............................:WWWWWWWWWWWWWWWW-..............................
+    ...............................................................................
+    ........................*WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW:.......................
+    ........................*WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW:.......................
+    ........................*WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW:.......................
+    ...............................................................................
+    ...............................................................................
+    """
 
     """
     GET /api/waagen
@@ -231,12 +357,12 @@ def create_app(test_config=None):
                 { 
                     "id": 1, 
                     "name" : "Obstwaage P001",
-                    "link" : "/api/waagen/1"
+                    "uri" : "/api/waagen/1"
                 },
                 { 
                     "id": 2, 
                     "name" : "Gemüsewaage P002",
-                    "link" : "/api/waagen/2"
+                    "uri" : "/api/waagen/2"
                 }
             ]
 
@@ -267,18 +393,35 @@ def create_app(test_config=None):
             links = list_routes("/api/waagen/<int:waage_id>/")        
             services = []
 
-            # only return routes for services of corresponding device from device type waage (3rd level)
+            # only return routes for services of corresponding device from device type pfandautomat (3rd level)
             for link in links:
+                service_type = {}
+                tags = []
+
                 level_number = link.count('/')
                 if level_number == 4:
-                    link = link.replace("<int:waaget_id>",str(waage_id))
-                    services.append(link)
+                    link = link.replace("<int:waage_id>",str(waage_id))
+                    print(link)
+                    # ToDo: tags in jeder API als Metadaten hinterlegen und beim Abgreifen aller Routes auch die Tags abgreifen 
+                    if "störungen" in link:
+                        tags = [ 
+                            "Error",
+                            "Fehler"
+                        ]
+
+                    service_type = {
+                        "uri" : link,
+                        "tags" : tags
+                    }
+                    print(service_type)
+
+                    services.append(service_type)
             
 
             return jsonify({
                 "success": True,
-                "device_id": waage_id,
                 "device_type": "Waage",
+                "device": waage_id,
                 "services": services
             })
 
@@ -298,16 +441,19 @@ def create_app(test_config=None):
         
         try:
    
-            störungen = { 
-                "Komponente":"Drucker",
-                "Beschreibung":"Drucker ist defekt."
-            }
-        
+            störungen = [
+                { 
+                    "Komponente":"Drucker",
+                    "Beschreibung":"Drucker ist defekt."
+                }
+            ]
+
             return jsonify({
                 "success": True,
-                "device_id": waage_id,
+                "device": waage_id,
                 "device_type": "Waage",
-                "störungen": störungen
+                "service" : "Störungen",
+                "service_message" : störungen
             })
 
 
