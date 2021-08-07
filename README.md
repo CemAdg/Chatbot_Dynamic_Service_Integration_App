@@ -6,7 +6,8 @@ The app realizes a dynamic service integration functionality for chatbots by pro
 
 The app contains a Flask web server with REST APIs which are responding in a specific format that can be consumed and interpreted by a chatbot.
 
-When running the app locally, the app is accessible under the following URL: http://localhost:5000 or  http://127.0.0.1:5000
+When running the app locally, the app is accessible under the following URL: http://localhost:5000 or  http://127.0.0.1:5000.
+
 The app is hosted on Heroku and accessible under the following URL: https://chatbot-dyn-serv-integr.herokuapp.com
 
 ## Getting Started
