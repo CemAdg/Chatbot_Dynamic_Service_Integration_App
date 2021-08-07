@@ -1,17 +1,13 @@
 # Chatbot Dynamic Service Integration App of UCC @ Retail
 
-Web App with REST APIs for dynamically integrating services to a speech assistant / chatbot without adapting the chatbot to the corresponding tasks of the service 
+The app realizes a dynamic service integration functionality for a chatbot by providing REST APIs that are responding in a specific format which can be consumed and interpreted by a chatbot without adapting him to the actual services behind the REST APIs. 
 
 ## About the Stack
 
-tbd
-
-
-## Chatbot Dynamic Service Integration REST APIs
-
-tbd
+The app contains a Flask web server with REST API endpoints which are responding in a specific format that can be consumed and interpreted by a chatbot.
 
 When running the app locally, the app is accessible under the following URL: http://localhost:5000 or  http://127.0.0.1:5000
+The app is hosted on Heroku and accessible under the following URL: https://chatbot-dyn-serv-integr.herokuapp.com
 
 ## Getting Started
 
