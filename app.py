@@ -60,7 +60,9 @@ def create_app(test_config=None):
     def get_devices():
         try:
             links = list_routes("/api") 
-            device_types = []         
+
+            device_types = {}   
+            counter = 0
 
             # only return routes for device types (1st level)
             for link in links:
@@ -71,22 +73,33 @@ def create_app(test_config=None):
                 level_number = link.count('/')
                 if level_number == 2:
                     # ToDo: tags in jeder API als Metadaten hinterlegen und beim Abgreifen aller Routes auch die Tags abgreifen 
+                    counter = counter + 1
                     if "pfandautomaten" in link:
                         tags = [ 
                             "Pfandflaschenautomat",
-                            "Leergutautomat"
+                            "Leergutautomat",
+                            "Pfandautomat",
+                            "pfandautomat",
+                            "pfandflaschenautomat",
+                            "pfandflaschen automat",
+                            "pfand automat"
                         ]
                     if "waagen" in link:
                         tags = [ 
-                            "Wiegegerät"
+                            "Wiegegerät",
+                            "waage"
                         ]
 
-                    device_type = {
-                        "uri" : link,
-                        "tags" : tags
+                    device_type = { 
+                        counter :  {
+                            "uri" : link,
+                            "tags" : tags
+                        }
                     }
 
-                    device_types.append(device_type)
+                    print(device_type)
+
+                    device_types.update(device_type)
 
             return jsonify({
                 "success": True,
@@ -144,27 +157,25 @@ def create_app(test_config=None):
 
         try:
 
-            json_dummy = [  
-                { 
+            json_dummy = { 
+                1: { 
                     "id": 1, 
                     "name" : "Einwegautomat P001",
                     "uri" : "/api/pfandautomaten/1"
                 },
-                { 
+                2: { 
                     "id": 2, 
                     "name" : "Mehrwegautomat P002",
                     "uri" : "/api/pfandautomaten/2"
                 },
-                { 
+                3: { 
                     "id": 3, 
                     "name" : "Mehrwegautomat P003",
                     "uri" : "/api/pfandautomaten/3"
                 } 
-            ]
+            }
 
             pfandautomaten = json_dummy
-
-            devices = [] 
 
             """
             for pfandautomat in pfandautomaten:
@@ -201,7 +212,8 @@ def create_app(test_config=None):
         try:
 
             links = list_routes("/api/pfandautomaten/<int:pfandautomat_id>/")        
-            services = []
+            services = {}   
+            counter = 0
 
             # only return routes for services of corresponding device from device type pfandautomat (3rd level)
             for link in links:
@@ -211,26 +223,30 @@ def create_app(test_config=None):
                 level_number = link.count('/')
                 if level_number == 4:
                     link = link.replace("<int:pfandautomat_id>",str(pfandautomat_id))
-                    print(link)
+                    
+                    counter = counter + 1
                     # ToDo: tags in jeder API als Metadaten hinterlegen und beim Abgreifen aller Routes auch die Tags abgreifen 
                     if "füllstand" in link:
                         tags = [ 
+                            "füllstand",
                             "fillLevel",
                             "Ladung"
                         ]
                     if "störungen" in link:
                         tags = [ 
+                            "störung",
                             "Error",
                             "Fehler"
                         ]
 
                     service_type = {
-                        "uri" : link,
-                        "tags" : tags
+                        counter : {
+                            "uri" : link,
+                            "tags" : tags 
+                        }
                     }
-                    print(service_type)
 
-                    services.append(service_type)
+                    services.update(service_type)
             
 
             return jsonify({
@@ -353,22 +369,21 @@ def create_app(test_config=None):
         
         try:
 
-            json_dummy = [  
-                { 
+            json_dummy = { 
+                1: { 
                     "id": 1, 
                     "name" : "Obstwaage P001",
                     "uri" : "/api/waagen/1"
                 },
-                { 
+                2: { 
                     "id": 2, 
                     "name" : "Gemüsewaage P002",
                     "uri" : "/api/waagen/2"
                 }
-            ]
+            }
 
             waagen = json_dummy
 
-            devices = [] 
             devices = waagen
 
             return jsonify({
@@ -391,7 +406,8 @@ def create_app(test_config=None):
         try:
 
             links = list_routes("/api/waagen/<int:waage_id>/")        
-            services = []
+            services = {}
+            counter = 0
 
             # only return routes for services of corresponding device from device type pfandautomat (3rd level)
             for link in links:
@@ -401,7 +417,8 @@ def create_app(test_config=None):
                 level_number = link.count('/')
                 if level_number == 4:
                     link = link.replace("<int:waage_id>",str(waage_id))
-                    print(link)
+                    
+                    counter = counter + 1
                     # ToDo: tags in jeder API als Metadaten hinterlegen und beim Abgreifen aller Routes auch die Tags abgreifen 
                     if "störungen" in link:
                         tags = [ 
@@ -410,12 +427,13 @@ def create_app(test_config=None):
                         ]
 
                     service_type = {
-                        "uri" : link,
-                        "tags" : tags
+                        counter : {
+                            "uri" : link,
+                            "tags" : tags
+                        }
                     }
-                    print(service_type)
 
-                    services.append(service_type)
+                    services.update(service_type)
             
 
             return jsonify({
