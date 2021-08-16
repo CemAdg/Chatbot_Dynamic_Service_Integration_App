@@ -87,6 +87,7 @@ def create_app(test_config=None):
                     if "waagen" in link:
                         tags = [ 
                             "Wiegegerät",
+                            "Waage",
                             "waage"
                         ]
 
@@ -228,6 +229,7 @@ def create_app(test_config=None):
                     # ToDo: tags in jeder API als Metadaten hinterlegen und beim Abgreifen aller Routes auch die Tags abgreifen 
                     if "füllstand" in link:
                         tags = [ 
+                            "Füllstand",
                             "füllstand",
                             "fillLevel",
                             "Ladung"
@@ -235,7 +237,10 @@ def create_app(test_config=None):
                     if "störungen" in link:
                         tags = [ 
                             "störung",
+                            "Störung",
+                            "error",
                             "Error",
+                            "fehler",
                             "Fehler"
                         ]
 
@@ -273,7 +278,7 @@ def create_app(test_config=None):
             füllstand = [
                 { 
                     "Füllstand":"75%",
-                    "Beschreibung":"Bitte Pfandautomat demnächst leeren, um Überfüllung zu vermeiden."
+                    "Beschreibung":"Füllstand beträgt 75 %. Bitte Pfandautomat demnächst leeren, um Überfüllung zu vermeiden."
                 } 
             ]  
 
@@ -422,7 +427,11 @@ def create_app(test_config=None):
                     # ToDo: tags in jeder API als Metadaten hinterlegen und beim Abgreifen aller Routes auch die Tags abgreifen 
                     if "störungen" in link:
                         tags = [ 
+                            "störung",
+                            "Störung",
+                            "error",
                             "Error",
+                            "fehler",
                             "Fehler"
                         ]
 
