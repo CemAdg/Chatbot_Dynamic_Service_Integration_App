@@ -69,6 +69,9 @@ def create_app(test_config=None):
                 
                 device_type = {}
                 tags = []
+                questions = [
+                        "Zu welchem Gerätetyp in der Filiale möchtest du Informationen haben?"
+                    ]
 
                 level_number = link.count('/')
                 if level_number == 2:
@@ -78,17 +81,32 @@ def create_app(test_config=None):
                         tags = [ 
                             "Pfandflaschenautomat",
                             "Leergutautomat",
+                            "leergutautomat",
+                            "leergut",
+                            "Leergut",
+                            "pfand",
+                            "Pfand",
                             "Pfandautomat",
                             "pfandautomat",
                             "pfandflaschenautomat",
                             "pfandflaschen automat",
-                            "pfand automat"
+                            "pfand automat",
+                            "deposit machine",
+                            "depositMachine"
                         ]
                     if "waagen" in link:
                         tags = [ 
                             "Wiegegerät",
                             "Waage",
-                            "waage"
+                            "waage",
+                            "wiegen",
+                            "waagen",
+                            "wiegegerät",
+                            "Waagen",
+                            "gemüsewaage",
+                            "obstwaage",
+                            "Gemüsewaage",
+                            "Obstwaage"
                         ]
 
                     device_type = { 
@@ -104,6 +122,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 "success": True,
+                "questions": questions,
                 "device_types": device_types
             })            
 
@@ -232,12 +251,20 @@ def create_app(test_config=None):
                             "Füllstand",
                             "füllstand",
                             "fillLevel",
-                            "Ladung"
+                            "Ladung",
+                            "fill level",
+                            "fill",
+                            "ladung",
+                            "füllung",
+                            "Füllung",
+                            "wie voll"
                         ]
                     if "störungen" in link:
                         tags = [ 
                             "störung",
                             "Störung",
+                            "störungen",
+                            "Störungen",
                             "error",
                             "Error",
                             "fehler",
@@ -429,6 +456,8 @@ def create_app(test_config=None):
                         tags = [ 
                             "störung",
                             "Störung",
+                            "Störungen",
+                            "störungen",
                             "error",
                             "Error",
                             "fehler",
