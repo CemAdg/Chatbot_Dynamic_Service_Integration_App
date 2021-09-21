@@ -63,15 +63,15 @@ def create_app(test_config=None):
 
             device_types = {}   
             counter = 0
+            questions = [
+                "Zu welchem Gerätetyp in der Filiale möchtest du Informationen haben?"
+            ]
 
             # only return routes for device types (1st level)
             for link in links:
                 
                 device_type = {}
                 tags = []
-                questions = [
-                        "Zu welchem Gerätetyp in der Filiale möchtest du Informationen haben?"
-                    ]
 
                 level_number = link.count('/')
                 if level_number == 2:
@@ -176,6 +176,9 @@ def create_app(test_config=None):
     def get_pfandautomaten():
 
         try:
+            questions = [
+                "Bitte nennen Sie die ID eines der Geräte, für welchen Sie einen Service aufrufen wollen."
+            ]
 
             json_dummy = { 
                 1: { 
@@ -212,6 +215,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 "success": True,
+                "questions": questions,
                 "device_type": "Pfandautomat",
                 "devices": devices
             })
@@ -234,6 +238,10 @@ def create_app(test_config=None):
             links = list_routes("/api/pfandautomaten/<int:pfandautomat_id>/")        
             services = {}   
             counter = 0
+
+            questions = [
+                "Welchen Service möchten Sie aufrufen?"
+            ]
 
             # only return routes for services of corresponding device from device type pfandautomat (3rd level)
             for link in links:
@@ -283,6 +291,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 "success": True,
+                "questions": questions,
                 "device_type": "Pfandautomat",
                 "device": pfandautomat_id,
                 "services": services
@@ -400,6 +409,9 @@ def create_app(test_config=None):
     def get_waagen():
         
         try:
+            questions = [
+                "Bitte nennen Sie die ID eines der Geräte, für welchen Sie einen Service aufrufen wollen."
+            ]
 
             json_dummy = { 
                 1: { 
@@ -420,6 +432,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 "success": True,
+                "questions": questions,
                 "device_type": "Waage",
                 "devices": devices
             })
@@ -440,6 +453,10 @@ def create_app(test_config=None):
             links = list_routes("/api/waagen/<int:waage_id>/")        
             services = {}
             counter = 0
+
+            questions = [
+                "Welchen Service möchten Sie aufrufen?"
+            ]
 
             # only return routes for services of corresponding device from device type pfandautomat (3rd level)
             for link in links:
@@ -476,6 +493,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 "success": True,
+                "questions": questions,
                 "device_type": "Waage",
                 "device": waage_id,
                 "services": services
