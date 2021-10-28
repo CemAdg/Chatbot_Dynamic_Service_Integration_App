@@ -39,34 +39,6 @@ This will install all of the required packages we selected within the `requireme
 - [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross origin requests from our frontend server. 
 
 
-## API Reference
-
-This chapter gives a detailed documentation about the API endpoints and their expected behavior.
-
-### Endpoints
-
-- GET '/api/'
-
-
-#### GET '/api/'
-- tbd
-```
-{
-    'tbd': 1,
-    'success': true
-}
-```
-
-### Error handling
-
-The API will return the following error responses based on the request failures:
-
-    400: Bad Request
-    404: Not Found
-    422: Unprocessable Entity
-    500: Internal Server Error
-
-
 ## Running the server
 
 From within this directory first ensure you are working using your created virtual environment. 
